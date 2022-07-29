@@ -13,12 +13,14 @@
 <code>data-form</code>, that's it. Now if you submit the form it will send http request to the specified action url with all form inputs</p>
 
 <h3>Note: inputs should have name attribute or they will not be sent with the http request</h3>
+
 ```
  <form id="jsForm" action="api.php" method="POST" data-form></form>
 ```
 
 <h1>Show Loader</h1>
 <p>Create any element that you want to show until the http request is done and add the attribure <code>data-form-loader</code> </p>
+
 <h3>Note: The element must be inside the form inorder to work</h3>
 ```
  <form id="jsForm" action="api.php" method="POST" data-form>
@@ -29,6 +31,7 @@
 <h1>Handle Bakcend Response</h1>
 <p>The response must be json encoded, if it contains <code>message</code> key, you can show it by creating element and give it attribute <code>data-form-messae</code>, if you want to redirect user to another page the backend must have key <code>redirect</code></p>
 <h3>Note: The elements must be inside the form inorder to work</h3>
+
 ```
  <form id="jsForm" action="api.php" method="POST" data-form>
    <div data-form-message></div>
@@ -46,6 +49,7 @@ echo json_encode($response);
 
 <h1>Call Custom Function</h1>
 <p>To call custom function after http request done, specify the function name with <code>data-form</code></p>
+
 ```
   <form id="jsForm" action="api.php" method="POST" data-form="showAlert">
  </form>
