@@ -23,6 +23,7 @@
 
 
 <h3>Note: The element must be inside the form inorder to work</h3>
+
 ```
  <form id="jsForm" action="api.php" method="POST" data-form>
     <div data-form-loader>loading...</div>
