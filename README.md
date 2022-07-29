@@ -21,6 +21,7 @@
 <h1>Show Loader</h1>
 <p>Create any element that you want to show until the http request is done and add the attribure <code>data-form-loader</code> </p>
 
+
 <h3>Note: The element must be inside the form inorder to work</h3>
 ```
  <form id="jsForm" action="api.php" method="POST" data-form>
@@ -38,9 +39,9 @@
  </form>
 ```
 
-```
 <h3>api.php</h3>
 
+```
 $response["message"]="success";
 $response["redirect"]="login.php";
 echo json_encode($response);
