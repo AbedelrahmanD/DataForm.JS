@@ -42,7 +42,7 @@ var formRules = {
             minLowercase: 1,
             minUppercase: 1,
             minNumbers: 1,
-            minSymbols: 1,
+            minSymbols: 0,
             returnScore: false,
             pointsPerUnique: 1,
             pointsPerRepeat: 0.5,
@@ -120,7 +120,7 @@ function ajaxFormSubmitEventBinding() {
             let fetchOptions = {
                 method: method
             }
-            alert(method.trim().toLowerCase());
+        
             if (method.trim().toLowerCase() == "post") {
                 fetchOptions.body = formData;
             } else {
@@ -176,8 +176,8 @@ function ajaxFormSubmitEventBinding() {
                 window.location.href = response.redirect;
             }
 
-            if (form.dataset.ajaxForm) {
-                eval(window[form.dataset.ajaxForm](response));
+            if (form.dataset.form) {
+                eval(window[form.dataset.form](response));
             }
 
 
