@@ -58,8 +58,8 @@
 
     }
   </style>
- 
- 
+
+
 </head>
 
 <body>
@@ -78,9 +78,7 @@
     <br>
     <div class="formContainer">
       <label>Tel</label>
-      <input type="tel" name="tel" value="96176368702" 
-      placeholder="ex: 961xxxxxxxx"
-      data-type="tel" data-type-message="must be 961xxxxxxxx">
+      <input type="tel" name="tel" value="96176368702" placeholder="ex: 961xxxxxxxx" data-type="tel" data-type-message="must be 961xxxxxxxx">
     </div>
     <button type="submit">submit</button>
     <div data-form-loader>loading...</div>
@@ -95,17 +93,24 @@
       <label>Number</label>
       <input type="text" name="name" data-number data-type="number" data-type-message="must be number">
     </div>
+<br>
+    <div class="formContainer">
+      <div data-type="radio" data-type-message="choose one">
+        <input type="radio" name="ra" value="one">one
+        <input type="radio" name="ra" value="two">two
+      </div>
+    </div>
     <button type="submit">submit</button>
     <div data-form-loader>loading...</div>
   </form>
   <script src="data_form.js"></script>
   <script src="data_form_rules.js"></script>
 
-<script>
-  function showAlert(response) {
-    alert(response.message);
-  }
-</script>
+  <script>
+    function showAlert(response) {
+      alert(response.message);
+    }
+  </script>
 
 
 </body>

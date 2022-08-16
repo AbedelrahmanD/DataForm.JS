@@ -25,15 +25,67 @@
 
 
 
-function changeCheckboxsValue(a = "*") { document.querySelectorAll(`${a} [type=checkbox]`).forEach(a => { a.checked ? a.value = 1 : a.value = 0 }) } function removeInvalidMessages(a = "*") { document.querySelectorAll(`${a} [data-invalid-message]`).forEach(a => { a.remove() }) } function runIsValidFormOnChange(a) { document.querySelectorAll(`${a} [data-type]`).forEach(b => { b.oninput = () => isValidForm(a) }) }
-function isValidForm(a) {
-   
-    changeCheckboxsValue(a), removeInvalidMessages(a), runIsValidFormOnChange(a); var b = !0; return document.
-    
-    querySelectorAll(`${a} [data-type]`).forEach(a => { a.removeAttribute("data-invalid-input"); var c = a.getAttribute("data-type"), e = a.value; if ("radio" == c && a.childNodes.forEach(a => { a.checked && (e = 1) }), null == formRules[c]) { alert(`"${c}" is not defined rule in formRules object`); return } if (!formRules[c](e, a)) { b = !1; var f = a.getAttribute("data-type-message"), d = document.createElement("span"); d.textContent = f, 
-    d.setAttribute("data-invalid-message", !0), 
-    a.after(d), a.setAttribute("data-invalid-input", !0) } }), b, initNumberInputs();
-    
+function changeCheckboxValue(formId) {
+    document.querySelectorAll(`${formId} [type=checkbox]`).forEach(checkbox => {
+        checkbox.value = checkbox.checked ? 1 : 0;
+    })
+}
+
+function removeInvalidMessages(formId) {
+    document.querySelectorAll(`${formId} [data-invalid-message]`).forEach(message => { message.remove() })
+}
+
+function runIsValidFormOnChange(formId) {
+    document.querySelectorAll(`${formId} [data-type]`).forEach(input => {
+        input.oninput = () => isValidForm(formId)
+    })
+}
+
+
+function isValidForm(formId) {
+    changeCheckboxValue(formId);
+    removeInvalidMessages(formId);
+    runIsValidFormOnChange(formId);
+    var isValid = true;
+    document.querySelectorAll(`${formId} [data-type]`).forEach(input => {
+        input.removeAttribute("data-invalid-input");
+        var type = input.getAttribute("data-type");
+        var value = input.value;
+        if (formRules[type] == null) {
+            alert(`"${type}" is not defined rule in formRules object`);
+            return;
+        }
+
+
+        if (type == "radio") {
+            for (const radio of input.childNodes) {
+                if (radio.checked) {
+                    value = 1;
+                    break;
+                }
+            }
+
+        }
+
+
+        if (!formRules[type](value, input)) {
+            isValid = false;
+            var message = input.getAttribute("data-type-message");
+            var messageElement = document.createElement("span");
+            messageElement.textContent = message,
+                messageElement.setAttribute("data-invalid-message", true),
+                input.after(messageElement);
+            input.setAttribute("data-invalid-input", true);
+        }
+
+
+    });
+
+    initNumberInputs();
+    return isValid;
+
+
+
 }
 
 
@@ -50,7 +102,7 @@ let statusCodesMessages = {
     500: "Server Error",
     503: "Service Unavailable",
 };
-function hideAjaxFormLoader() {
+function hideDataFormLoader() {
     document.querySelectorAll("[data-form-loader]").forEach(element => {
         element.style.display = "none";
     });
@@ -59,7 +111,7 @@ function hideAjaxFormLoader() {
 
 
 function ajaxFormSubmitEventBinding() {
-  
+
     document.querySelectorAll("[data-form]").forEach(form => {
 
         form.onsubmit = async (e) => {
@@ -161,7 +213,7 @@ function initNumberInputs() {
 
 }
 function initDataForm() {
-    hideAjaxFormLoader();
+    hideDataFormLoader();
     ajaxFormSubmitEventBinding();
 }
 
