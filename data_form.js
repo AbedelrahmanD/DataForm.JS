@@ -63,8 +63,11 @@ function hideDataFormLoader() {
 }
 
 function isValidInput(input) {
+
     let isValid = true;
+    input.setAttribute("data-form-current-input", true);
     input.removeAttribute("data-invalid-input");
+    document.querySelectorAll("[data-form-current-input] + [data-invalid-message]").forEach(message => message.remove());
     var type = input.getAttribute("data-type");
     var value = input.value;
     if (formRules[type] == null) {
@@ -86,6 +89,7 @@ function isValidInput(input) {
 
     if (!formRules[type](value, input)) {
         isValid = false;
+        console.log("aa");
         var message = input.getAttribute("data-type-message");
         var messageElement = document.createElement("span");
         messageElement.textContent = message,
@@ -93,11 +97,12 @@ function isValidInput(input) {
             input.after(messageElement);
         input.setAttribute("data-invalid-input", true);
     }
+    input.removeAttribute("data-form-current-input");
     return isValid;
 }
 function isValidForm(formId) {
     changeCheckboxValue(formId);
-    removeInvalidMessages(formId);
+    // removeInvalidMessages(formId);
     runIsValidFormOnChange(formId);
     let isValid = true;
     document.querySelectorAll(`${formId} [data-type]`).forEach(input => {
@@ -118,8 +123,8 @@ function onTypeEvntbinding() {
 
     document.querySelectorAll("[data-form-auto]").forEach(form => {
         document.querySelectorAll(`#${form.id} [data-type]`).forEach(input => {
-            // input.oninput=()=>isValidInput(input);
-            
+            input.oninput=()=>isValidInput(input);
+
         })
 
     });

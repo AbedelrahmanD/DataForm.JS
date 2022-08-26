@@ -31,6 +31,9 @@ var formRules = {
             pointsForContainingSymbol: 10
         });
     },
+    confirmPassword: function (value, element = null) {
+        // return value == document.querySelector("#password").value;
+    },
     checkbox: function (value, element = null) {
         return value == 1;
     },
