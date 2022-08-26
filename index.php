@@ -65,7 +65,7 @@
 <body>
   <h1>Form1- Post Method</h1>
 
-  <form id="jsForm" action="api.php" method="POST" data-form="showAlert">
+  <form id="jsForm" action="api.php" method="POST" data-form-auto data-form="showAlert">
     <div class="formContainer">
       <label>Name</label>
       <input type="text" name="name" data-type="text" data-type-message="Required">
@@ -93,7 +93,7 @@
       <label>Number</label>
       <input type="text" name="name" data-number data-type="number" data-type-message="must be number">
     </div>
-<br>
+    <br>
     <div class="formContainer">
       <div data-type="radio" data-type-message="choose one">
         <input type="radio" name="ra" value="one">one

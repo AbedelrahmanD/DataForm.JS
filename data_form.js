@@ -25,6 +25,21 @@
 
 
 
+
+let successStatusCodes = [200, 201];
+let statusCodesMessages = {
+    301: "Permanent Redirect",
+    302: "Temporary Redirect",
+    400: "Bad Request",
+    401: "Unauthorized",
+    404: "Not Found",
+    408: "Tooks Too Long",
+    410: "Gone",
+    500: "Server Error",
+    503: "Service Unavailable",
+};
+
+
 function changeCheckboxValue(formId) {
     document.querySelectorAll(`${formId} [type=checkbox]`).forEach(checkbox => {
         checkbox.value = checkbox.checked ? 1 : 0;
@@ -41,47 +56,57 @@ function runIsValidFormOnChange(formId) {
     })
 }
 
+function hideDataFormLoader() {
+    document.querySelectorAll("[data-form-loader]").forEach(element => {
+        element.style.display = "none";
+    });
+}
 
+function isValidInput(input) {
+    let isValid = true;
+    input.removeAttribute("data-invalid-input");
+    var type = input.getAttribute("data-type");
+    var value = input.value;
+    if (formRules[type] == null) {
+        alert(`"${type}" is not defined rule in formRules object`);
+        return;
+    }
+
+
+    if (type == "radio") {
+        for (const radio of input.childNodes) {
+            if (radio.checked) {
+                value = 1;
+                break;
+            }
+        }
+
+    }
+
+
+    if (!formRules[type](value, input)) {
+        isValid = false;
+        var message = input.getAttribute("data-type-message");
+        var messageElement = document.createElement("span");
+        messageElement.textContent = message,
+            messageElement.setAttribute("data-invalid-message", true),
+            input.after(messageElement);
+        input.setAttribute("data-invalid-input", true);
+    }
+    return isValid;
+}
 function isValidForm(formId) {
     changeCheckboxValue(formId);
     removeInvalidMessages(formId);
     runIsValidFormOnChange(formId);
-    var isValid = true;
+    let isValid = true;
     document.querySelectorAll(`${formId} [data-type]`).forEach(input => {
-        input.removeAttribute("data-invalid-input");
-        var type = input.getAttribute("data-type");
-        var value = input.value;
-        if (formRules[type] == null) {
-            alert(`"${type}" is not defined rule in formRules object`);
-            return;
-        }
-
-
-        if (type == "radio") {
-            for (const radio of input.childNodes) {
-                if (radio.checked) {
-                    value = 1;
-                    break;
-                }
-            }
-
-        }
-
-
-        if (!formRules[type](value, input)) {
+        if (!isValidInput(input)) {
             isValid = false;
-            var message = input.getAttribute("data-type-message");
-            var messageElement = document.createElement("span");
-            messageElement.textContent = message,
-                messageElement.setAttribute("data-invalid-message", true),
-                input.after(messageElement);
-            input.setAttribute("data-invalid-input", true);
         }
-
 
     });
 
-    initNumberInputs();
     return isValid;
 
 
@@ -89,31 +114,21 @@ function isValidForm(formId) {
 }
 
 
+function onTypeEvntbinding() {
 
-let successStatusCodes = [200, 201];
-let statusCodesMessages = {
-    301: "Permanent Redirect",
-    302: "Temporary Redirect",
-    400: "Bad Request",
-    401: "Unauthorized",
-    404: "Not Found",
-    408: "Tooks Too Long",
-    410: "Gone",
-    500: "Server Error",
-    503: "Service Unavailable",
-};
-function hideDataFormLoader() {
-    document.querySelectorAll("[data-form-loader]").forEach(element => {
-        element.style.display = "none";
+    document.querySelectorAll("[data-form-auto]").forEach(form => {
+        document.querySelectorAll(`#${form.id} [data-type]`).forEach(input => {
+            // input.oninput=()=>isValidInput(input);
+            
+        })
+
     });
+
 }
 
 
-
 function ajaxFormSubmitEventBinding() {
-
     document.querySelectorAll("[data-form]").forEach(form => {
-
         form.onsubmit = async (e) => {
             e.preventDefault();
             let formId = form.id;
@@ -176,7 +191,7 @@ function ajaxFormSubmitEventBinding() {
                 messages.forEach(message => {
 
                     message.innerHTML = response.message;
-                    message.className="";
+                    message.className = "";
                     message.classList.add(response.status)
                 });
 
@@ -201,7 +216,7 @@ function initNumberInputs() {
     let numberInputs = document.querySelectorAll("[data-number]");
 
     numberInputs.forEach(input => {
-        input.oninput = () => {
+        input.onkeyup = () => {
             let numberValue = parseInt(input.value);
 
             if (isNaN(numberValue)) {
@@ -217,6 +232,7 @@ function initNumberInputs() {
 function initDataForm() {
     hideDataFormLoader();
     ajaxFormSubmitEventBinding();
+    onTypeEvntbinding();
 }
 
 window.onload = () => {
