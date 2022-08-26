@@ -89,7 +89,6 @@ function isValidInput(input) {
 
     if (!formRules[type](value, input)) {
         isValid = false;
-        console.log("aa");
         var message = input.getAttribute("data-type-message");
         var messageElement = document.createElement("span");
         messageElement.textContent = message,
@@ -203,6 +202,9 @@ function ajaxFormSubmitEventBinding() {
             }
             if (response.redirect) {
                 window.location.href = response.redirect;
+            }
+            if (response.reset) {
+               document.querySelector(`#${formId}`).reset();
             }
 
             if (form.dataset.form) {
