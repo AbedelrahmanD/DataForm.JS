@@ -69,6 +69,7 @@
     <div class="formContainer">
       <label>Name</label>
       <input type="text" name="name" data-type="text" data-type-message="Required">
+      <div data-error="nameRequired"></div>
     </div>
     <br>
     <div class="formContainer">

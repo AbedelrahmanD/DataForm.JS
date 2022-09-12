@@ -122,7 +122,7 @@ function onTypeEvntbinding() {
 
     document.querySelectorAll("[data-form-auto]").forEach(form => {
         document.querySelectorAll(`#${form.id} [data-type]`).forEach(input => {
-            input.oninput=()=>isValidInput(input);
+            input.oninput = () => isValidInput(input);
 
         })
 
@@ -157,6 +157,7 @@ function ajaxFormSubmitEventBinding() {
             let loaders = document.querySelectorAll(`#${formId} [data-form-loader]`);
             let messages = document.querySelectorAll(`#${formId} [data-form-message]`);
             let inputs = document.querySelectorAll(`#${formId} *`);
+            let errors = document.querySelectorAll(`[data-error]`);
 
             loaders.forEach(loader => {
                 loader.style.display = "flex";
@@ -170,6 +171,9 @@ function ajaxFormSubmitEventBinding() {
                 message.innerHTML = "";
             });
 
+            errors.forEach(error => {
+                error.textContent = "";
+            });
 
 
             let response = await fetch(action, fetchOptions);
@@ -181,6 +185,8 @@ function ajaxFormSubmitEventBinding() {
             inputs.forEach(input => {
                 input.removeAttribute("disabled");
             });
+
+
 
 
             if (!successStatusCodes.includes(response.status)) {
@@ -204,7 +210,16 @@ function ajaxFormSubmitEventBinding() {
                 window.location.href = response.redirect;
             }
             if (response.reset) {
-               document.querySelector(`#${formId}`).reset();
+                document.querySelector(`#${formId}`).reset();
+            }
+
+            if (response.errors) {
+                let errorKeys = Object.keys(response.errors);
+                errorKeys.forEach((field) => {
+                    document.querySelector(`[data-error=${field}]`).textContent = response.errors[field];
+                });
+
+
             }
 
             if (form.dataset.form) {
