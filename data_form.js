@@ -46,9 +46,7 @@ function changeCheckboxValue(formId) {
     })
 }
 
-function removeInvalidMessages(formId) {
-    document.querySelectorAll(`${formId} [data-invalid-message]`).forEach(message => { message.remove() })
-}
+
 
 function runIsValidFormOnChange(formId) {
     document.querySelectorAll(`${formId} [data-type]`).forEach(input => {
@@ -101,7 +99,6 @@ function isValidInput(input) {
 }
 function isValidForm(formId) {
     changeCheckboxValue(formId);
-    // removeInvalidMessages(formId);
     runIsValidFormOnChange(formId);
     let isValid = true;
     document.querySelectorAll(`${formId} [data-type]`).forEach(input => {
@@ -251,13 +248,117 @@ function initNumberInputs() {
 
 
 }
+
+
+function onFocusOutTel(el) {
+    let value = el.value;
+
+    if (!formRules["tel"](value, el) || value == "") {
+        return;
+    }
+    if (!value.includes(telSeparator)) {
+        el.value = value.substr(0, telCountryCode.length) + telSeparator + parseInt(value.substr(telCountryCode.length));
+    }
+}
+
+function onFocusInTel(el) {
+    let value = el.value;
+    let telParts = value.split(telSeparator);
+    if (telParts.length < 2) {
+        return;
+    }
+    let telCountryCode = telParts[0];
+    let phoneNumber = telParts[1];
+    if (telLength != (telCountryCode.length + phoneNumber.length)) {
+        phoneNumber = `0${phoneNumber}`;
+    }
+    el.value = telCountryCode + phoneNumber;
+}
+function initTelInputs() {
+    let telInputs = document.querySelectorAll("[data-type=tel]");
+    telInputs.forEach(el => {
+        onFocusOutTel(el);
+        el.addEventListener('focusout', () => {
+            onFocusOutTel(el);
+        });
+
+        el.addEventListener('focusin', () => {
+            onFocusInTel(el);
+        });
+
+
+    });
+}
+
+function imagePickerPreview(inputFileName) {
+    document.querySelector(`[name=${inputFileName}]`).click();
+
+}
+function removeImage(inputFileName) {
+
+    document.querySelector(`[name=${inputFileName}]`).value = null;
+
+    document.querySelector(`#${inputFileName}_preview img`).remove();
+    event.target.remove();
+    event.stopPropagation();
+}
+
+function initImageInputs() {
+
+    document.querySelectorAll("[data-image]").forEach(input => {
+        input.onchange = (e) => {
+
+            var elementName = e.target.getAttribute("name");
+            var files = e.target.files;
+            if (files.length == 0) {
+                return;
+            }
+
+            var selectedImage = files[0];
+            if (selectedImage.type != "image/jpeg"
+                && selectedImage.type != "image/jpg"
+                && selectedImage.type != "image/png"
+                && selectedImage.type != "image/png") {
+                return;
+            }
+            var imageSrc = URL.createObjectURL(files[0]);
+            var image = `<img src='${imageSrc}'/>`;
+            var removeImage = `<span class="${elementName}_remove" onclick='removeImage("${elementName}")'>✖</span>`;
+            document.querySelector(`#${elementName}_preview`).innerHTML = (image + removeImage);
+        }
+    });
+
+
+    let imageInputs = document.querySelectorAll("[data-image]");
+    imageInputs.forEach(input => {
+        var elementName = input.getAttribute("name");
+        var imagePreviewContainer = `
+        <div id='${elementName}_preview' 
+             name='${elementName}_preview' 
+             class='${elementName}_container' 
+             onclick='imagePickerPreview("${elementName}")'>
+        </div>`;
+
+        input.insertAdjacentHTML("afterend", imagePreviewContainer);
+        input.style.display = "none";
+
+    })
+
+
+}
+
+
+
 function initDataForm() {
     hideDataFormLoader();
     ajaxFormSubmitEventBinding();
     onTypeEvntbinding();
 }
 
-window.onload = () => {
+
+document.addEventListener('DOMContentLoaded', function () {
     initDataForm();
     initNumberInputs();
-}
+    initTelInputs();
+    initImageInputs();
+});

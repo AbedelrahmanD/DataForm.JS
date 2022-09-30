@@ -58,6 +58,7 @@ var formRules = {
     tel: function (value, element = null) {
 
         if (value == "") {
+            //if optional
             return true;
         }
         if (value.includes(telSeparator) && value.length == telLength) {
@@ -74,43 +75,3 @@ var formRules = {
 
 
 
-
-let telInputs = document.querySelectorAll("[data-type=tel]")
-
-
-function onFocusOutTel(el) {
-    let value = el.value;
-
-    if (!formRules["tel"](value, el) || value == "") {
-        return;
-    }
-    if (!value.includes(telSeparator)) {
-        el.value = value.substr(0, telCountryCode.length) + telSeparator + parseInt(value.substr(telCountryCode.length));
-    }
-}
-
-function onFocusInTel(el) {
-    let value = el.value;
-    let telParts = value.split(telSeparator);
-    if (telParts.length < 2) {
-        return;
-    }
-    let telCountryCode = telParts[0];
-    let phoneNumber = telParts[1];
-    if (telLength != (telCountryCode.length + phoneNumber.length)) {
-        phoneNumber = `0${phoneNumber}`;
-    }
-    el.value = telCountryCode + phoneNumber;
-}
-telInputs.forEach(el => {
-    onFocusOutTel(el);
-    el.addEventListener('focusout', () => {
-        onFocusOutTel(el);
-    });
-
-    el.addEventListener('focusin', () => {
-        onFocusInTel(el);
-    });
-
-
-})
